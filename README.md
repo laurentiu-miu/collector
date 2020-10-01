@@ -7,12 +7,19 @@ Prerequisite - For this to run you must have:
 
 1. Download and install cassandra in docker.
     ```
-    docker run --name some-cassandra --network some-network -d cassandra:tag
+    docker run --name my-cassandra-1 -p 9042:9042 -d cassandra:3.11
+    docker start CONTAINER_ID
     ```
+   
    
 2. Run the scripts in src/resources/cql-schema.sql.
 This script will create keyspace (mykespace), tables (users,accounts,transactions), custom types and also will populate the user table with data.
-
+    ```
+    docker exec -it CONTAINER_ID sh
+    cqlsh
+    ```
+   copy-paste content of the cql-schema.sql
+   
 3. Start the application
     ```    
     mvn spring-boot:run
