@@ -21,6 +21,4 @@ public class AccountsDto extends ComposedPrimaryKey implements Serializable {
   private String status;
   private String type;
   private Double balance;
-  @Transient
-  private String exception;
 }

@@ -25,6 +25,4 @@ public class TransactionsDto extends ComposedPrimaryKey implements Serializable 
   @JsonProperty("update")
   private String updatedate;
   private String description;
-  @Transient
-  private String exception;
 }

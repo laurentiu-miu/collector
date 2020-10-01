@@ -50,4 +50,14 @@ In this direction we can add KAFKA add instead of reading the users from the db 
 Depending on the replication factor of cassandra and the number of pods(instances of the application) this app can become highly available.
 * Improve tasting
 * Monitoring with micrometer
+
+## Requierments
+- [x] 2 endpoints to expose accounts and transactions from my cassandra db
+- [x] scheduler running at 1 o'clock can be customized in application.yaml importer.scheduler.cron
+- [x] Exception handling 
+- [x] Nice to have: tests - hard to test reactiv env, also hard to mock the cassandra database only Utility class is tested
+- [x] Frontend - (swagger not realy an UI) - http://localhost:8180/docs-ui.html
+- [x] Readme check
+- [x] https://github.com/laurentiu-miu/collector
+- [x] java 11
    
