@@ -18,7 +18,13 @@ This script will create keyspace (mykespace), tables (users,accounts,transaction
     docker exec -it CONTAINER_ID sh
     cqlsh
     ```
-   copy-paste content of the cql-schema.sql
+    copy-paste content of the cql-schema.sql
+    verify
+    
+    ```
+    use mykeyspace; 
+    select count(*) from users;
+    ``` 
    
 3. Start the application
     ```    
@@ -67,7 +73,7 @@ the load to different instances of the application. (for example KAFKA)
 - [x] Exception handling 
 - [x] Nice to have: tests - hard to test reactiv env, also hard to mock the cassandra database only Utility class is tested
 - [x] Frontend - (swagger not realy an UI) - http://localhost:8180/docs-ui.html
-- [x] Readme check
+- [x] README.md
 - [x] https://github.com/laurentiu-miu/collector
 - [x] java 11
    
