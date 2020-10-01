@@ -1,0 +1,125 @@
+{
+	"info": {
+		"_postman_id": "7333f78a-d45a-421d-8440-2e1dfe285ec6",
+		"name": "Test-Transactions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "username",
+						"value": "ionescu",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8180/transactions/a4",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8180/transactions/a4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"transactions",
+						"a4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8180/accounts/a4",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8180/accounts/a4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"accounts",
+						"a4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/accounts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-AUTH",
+						"value": "eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE2MDEzODQ5MjEsImp0aSI6InR5eVJCOEM1Mmkzdlg3Zk1obDNWSVEiLCJpYXQiOjE2MDEzODQzMjEsIm5iZiI6MTYwMTM4NDIwMSwic3ViIjoiaW9uZXNjdSJ9.qThwRzs993OZcpNMFcfA_STNx67YT2_bY9baI64qHrh3XE4GY5IVj1Bo10NEHWdPaZb-6YUFxbr25L2egt9SqDTwyCfPg0o04-CKbdXo6BRBn6XXlkjdniq1F7gUQytGrXxL3yg9g9qeJ_S05OaE6ISyZz-NIMMleDa-4RF8YkLLEYv0ivmx29ymRXdWXygixPIbSF4DpXxpqLSvOAIbpb9LVUi71itgjdpMNzdtOBoJRYFjzSKabxS12vLx_ASoS-m0O09Ha4I2GMrL2-k0fhOsX_gV7e4weoybzuIR6fDuWgHwzfChS68ctKzTD9r37LnJKJyZA_HgsdALVGWHKA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/transactions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-AUTH",
+						"value": "eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE2MDEzODQ5MjEsImp0aSI6InR5eVJCOEM1Mmkzdlg3Zk1obDNWSVEiLCJpYXQiOjE2MDEzODQzMjEsIm5iZiI6MTYwMTM4NDIwMSwic3ViIjoiaW9uZXNjdSJ9.qThwRzs993OZcpNMFcfA_STNx67YT2_bY9baI64qHrh3XE4GY5IVj1Bo10NEHWdPaZb-6YUFxbr25L2egt9SqDTwyCfPg0o04-CKbdXo6BRBn6XXlkjdniq1F7gUQytGrXxL3yg9g9qeJ_S05OaE6ISyZz-NIMMleDa-4RF8YkLLEYv0ivmx29ymRXdWXygixPIbSF4DpXxpqLSvOAIbpb9LVUi71itgjdpMNzdtOBoJRYFjzSKabxS12vLx_ASoS-m0O09Ha4I2GMrL2-k0fhOsX_gV7e4weoybzuIR6fDuWgHwzfChS68ctKzTD9r37LnJKJyZA_HgsdALVGWHKA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/transactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
