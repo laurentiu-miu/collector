@@ -1,7 +1,6 @@
 # Reactive-Collector
 ## Running the application
-Prerequisite: 
-For this to run you must have:
+Prerequisite - For this to run you must have:
 * java 11
 * apache maven 3.5
 * cassandra 3.11
@@ -48,6 +47,7 @@ In order to scale horizontal and benefit from the cloud infrastructure we need t
 In this direction we can add KAFKA add instead of reading the users from the db we will read it them from topic by partitions.
 * Self healing with readiness and liveness probes
 * Availability 
-Depending on the replication factor of cassandra and the number of pods(instances of the application) this app can be highly available.
-
+Depending on the replication factor of cassandra and the number of pods(instances of the application) this app can become highly available.
+* Improve tasting
+* Monitoring with micrometer
    

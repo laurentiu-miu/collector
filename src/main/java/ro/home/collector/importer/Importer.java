@@ -13,7 +13,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.ConnectableFlux;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ro.home.collector.Utility;
@@ -52,6 +51,7 @@ public class Importer implements ApplicationRunner {
   /**
    * here we call the provider for token
    * @param user enrich the user with token
+   * @return return a cloned user enriched wit the token
    */
   public static Mono<UsersDto> getJWTForUser(final UsersDto user) {
     return webClient
@@ -69,6 +69,7 @@ public class Importer implements ApplicationRunner {
   /**
    * here we call the provider for accounts, if everything is ok we save them to the DB
    * @param user for which we save the accounts
+   * @return a flux of saved accounts
    */
   public static Flux<AccountsDto> getAndSaveAccounts(final UsersDto user) {
      return webClient.get()
@@ -88,6 +89,7 @@ public class Importer implements ApplicationRunner {
   /**
    * here we call the provider for transactions, if everything is ok we save them to the DB
    * @param user for which we save the transactions
+   * @return a flux of saved transactions
    */
   public static Flux<TransactionsDto> getAndSaveTransactions(final UsersDto user) {
     return webClient.get()
@@ -98,7 +100,10 @@ public class Importer implements ApplicationRunner {
         })
         .doOnError(log::error)
         .map(list -> Importer.mapper(list, user, TransactionsDto.class))
-        .map(list -> {if(user.getUsername().equals("a4")) throw new RuntimeException(user.getUsername()); return transactionsRepository.saveAll(list);})
+        .map(list -> {
+          //if(user.getUsername().equals("a4")) throw new RuntimeException(user.getUsername());
+          return transactionsRepository.saveAll(list);
+        })
         .flux()
         .flatMap(flux->flux);
   }
@@ -106,6 +111,7 @@ public class Importer implements ApplicationRunner {
   /**
    * updates the user after all data was loaded to the database, I mean accounts and transactions
    * @param user
+   * @return saved user
    */
   public static Mono<UsersDto> updateImportedUser(UsersDto user) {
     log.info("user {} {} {}", user.getUsername(), UsersDto.class, 1);
@@ -137,7 +143,6 @@ public class Importer implements ApplicationRunner {
    * after that get the transactions and save them and after that we update the
    * imported date
    * @param fluxOfUsers a list of users
-   * @return
    */
   public static void importFluxOfUsers(Flux<UsersDto> fluxOfUsers){
       fluxOfUsers
@@ -155,7 +160,7 @@ public class Importer implements ApplicationRunner {
   /**
    * if we have a new user we need to do a initial import of accounts and transactions
    * @param usersDto the new user
-   * @return
+   * @return saved users
    */
   public static Mono<UsersDto> importSingleUser(UsersDto usersDto){
     return Mono.just(usersDto)
@@ -176,7 +181,6 @@ public class Importer implements ApplicationRunner {
   @Override
   public void run(ApplicationArguments args) throws Exception {
     try {
-      //.publish().autoConnect()
       importFluxOfUsers(usersRepository.findAll());
     }catch (Exception ex){
       log.error(ex);
