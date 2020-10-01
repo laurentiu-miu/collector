@@ -31,10 +31,12 @@ This script will create keyspace (mykespace), tables (users,accounts,transaction
     mvn spring-boot:run
     ```
 Default port is 8180, the provider runs on 8080.
+Provider url/port and application port can be configured in application.yaml. 
 
 In order to test the endpoints:
 * In resources you will find a postman collection Test.postman_collection.json.
 * And also you can use the swagger docs http://localhost:8180/docs-ui.html
+
 ## Considerations
 There are two main components:
 #### Importer
@@ -67,6 +69,7 @@ Listen with the importer (importFluxOfUsers method) to the particular topic.
 Scale the application with same applicationId but not more then the number of partitions.
 * Self healing with readiness and liveness probes
 * Availability - Depending on the replication factor of cassandra and the number of pods(instances of the application) this app can become highly available.
+* Performance - complicated topic depends on the number of cassandra and application nodes
 * Improve tasting
 * Monitoring with micrometer
 
