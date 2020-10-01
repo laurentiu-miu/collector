@@ -18,11 +18,14 @@ This script will create keyspace (mykespace), tables (users,accounts,transaction
     mvn spring-boot:run
     ```
 Default port is 8180, the provider runs on 8080.
-In resources you will find a Tes.postman_collection.json in order to test the endpoints.
+
+In order to test the endpoints:
+* In resources you will find a postman collection Test.postman_collection.json.
+* And also you can use the swagger docs http://localhost:8180/docs-ui.html
 ## Considerations
-There are to main components:
+There are two main components:
 #### Importer
-This component will get the data from the provider and pus it to the db.
+This component will get the data from the provider and push it to the cassandra db.
 This will be done at each startup if the user importer date is different from the current date.
 Or each time the scheduler runs (configured in application.yaml default is set to run 1 per day). 
 The intended flow of the application. 
@@ -43,15 +46,15 @@ Basic monitor of a flow with 177 users imported
 * As any application there are always things that can or need to be improved.
 * What happens if will have 1 millions of users to update each day?
 Currently the application can be scaled verticaly.
-In order to scale horizontal and benefit from the cloud infrastructure we need to have a coordinator to push data to the individual instances of the application.
-In this direction we can add KAFKA add instead of reading the users from the db we will read it them from topic by partitions.
+In order to scale horizontal and benefit from the cloud infrastructure we need to have a user coordinator in order to distribute 
+the load to different instances of the application. (for example KAFKA)
 * Self healing with readiness and liveness probes
-* Availability 
-Depending on the replication factor of cassandra and the number of pods(instances of the application) this app can become highly available.
+* Availability - Depending on the replication factor of cassandra and the number of pods(instances of the application) this app can become highly available.
 * Improve tasting
 * Monitoring with micrometer
 
 ## Requierments
+
 - [x] 2 endpoints to expose accounts and transactions from my cassandra db
 - [x] scheduler running at 1 o'clock can be customized in application.yaml importer.scheduler.cron
 - [x] Exception handling 
