@@ -15,9 +15,7 @@ importer:
   login-uri: "/login"
   base-url: "http://localhost:8080"
   scheduler:
-    cron: "0 1 1 ? * *"
-
-
+    cron: "0 0 1 * * ?"
 
 springdoc:
   api-docs:

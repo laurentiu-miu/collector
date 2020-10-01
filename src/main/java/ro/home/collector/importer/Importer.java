@@ -181,6 +181,7 @@ public class Importer implements ApplicationRunner {
   @Override
   public void run(ApplicationArguments args) throws Exception {
     try {
+      log.info("application started - started import");
       importFluxOfUsers(usersRepository.findAll());
     }catch (Exception ex){
       log.error(ex);
@@ -197,6 +198,7 @@ public class Importer implements ApplicationRunner {
   @Scheduled(cron = "${importer.scheduler.cron}")
   public void run() throws Exception {
     try {
+      log.info("started scheduled import");
       importFluxOfUsers(usersRepository.findAll());
     }catch (Exception ex){
       log.error(ex);
