@@ -58,9 +58,13 @@ Basic monitor of a flow with 177 users imported
 ## Future work
 * As any application there are always things that can or need to be improved.
 * What happens if will have 1 millions of users to update each day?
+
 Currently the application can be scaled verticaly.
 In order to scale horizontal and benefit from the cloud infrastructure we need to have a user coordinator in order to distribute 
-the load to different instances of the application. (for example KAFKA)
+the load to different instances of the application. 
+We can add KAFKA and push to a topic all the user that needs to be updated (were the scheduler runs). 
+Listen with the importer (importFluxOfUsers method) to the particular topic.
+Scale the application with same applicationId but not more then the number of partitions.
 * Self healing with readiness and liveness probes
 * Availability - Depending on the replication factor of cassandra and the number of pods(instances of the application) this app can become highly available.
 * Improve tasting
