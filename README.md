@@ -1,6 +1,5 @@
-#Reactive-Collector
-
-##Running the application
+# Reactive-Collector
+## Running the application
 Prerequisite: 
 For this to run you must have:
 * java 11
@@ -21,7 +20,7 @@ This script will create keyspace (mykespace), tables (users,accounts,transaction
     ```
 Default port is 8180, the provider runs on 8080.
 In resources you will find a Tes.postman_collection.json in order to test the endpoints.
-##Considerations
+## Considerations
 There are to main components:
 #### Importer
 This component will get the data from the provider and pus it to the db.
@@ -37,7 +36,10 @@ The intended flow of the application.
 This component is the web controller that exposes accounts and transactions reactively.
 
 The db holds all the data for each day.
- 
+Basic monitor of a flow with 177 users imported
+
+![memory](https://github.com/laurentiu-miu/collector/blob/master/monitor.png)
+
 ## Future work
 * As any application there are always things that can or need to be improved.
 * What happens if will have 1 millions of users to update each day?
