@@ -3,6 +3,7 @@ package ro.home.collector.importer;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.ApplicationArguments;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import ro.home.collector.Utility;
 import ro.home.collector.model.AccountsDto;
 import ro.home.collector.model.ComposedPrimaryKey;
@@ -54,6 +56,7 @@ public class Importer implements ApplicationRunner {
    * @return return a cloned user enriched wit the token
    */
   public static Mono<UsersDto> getJWTForUser(final UsersDto user) {
+    log.info("getJWTForUser user:{}",user.getUsername());
     return webClient
         .post()
         .uri(importerSettings.getLoginUri())
@@ -82,8 +85,7 @@ public class Importer implements ApplicationRunner {
         .doOnError(log::error)
         .map(list -> Importer.mapper(list, user, AccountsDto.class))
         .map(list -> accountsRepository.saveAll(list))
-        .flux()
-        .flatMap(flux->flux);
+        .flatMapMany(many->many);
   }
 
   /**
@@ -101,11 +103,10 @@ public class Importer implements ApplicationRunner {
         .doOnError(log::error)
         .map(list -> Importer.mapper(list, user, TransactionsDto.class))
         .map(list -> {
-          //if(user.getUsername().equals("a4")) throw new RuntimeException(user.getUsername());
+          if(user.getUsername().equals("a4")) throw new RuntimeException(user.getUsername());
           return transactionsRepository.saveAll(list);
         })
-        .flux()
-        .flatMap(flux->flux);
+        .flatMapMany(many->many);
   }
 
   /**
@@ -145,16 +146,23 @@ public class Importer implements ApplicationRunner {
    * @param fluxOfUsers a list of users
    */
   public static void importFluxOfUsers(Flux<UsersDto> fluxOfUsers){
+    final long start = System.nanoTime();
       fluxOfUsers
+        .parallel(10)
+        .runOn(Schedulers.newParallel("my-parallel"))
         .filter(Utility::wasNotUpdatedToday)
         .flatMap(Importer::getJWTForUser)
-        .delayUntil(user->Flux.empty().thenMany(Importer.getAndSaveAccounts(user))
+        .concatMap(user->Flux.empty()
+            .thenMany(Importer.getAndSaveAccounts(user))
             .thenMany(Importer.getAndSaveTransactions(user))
             .thenMany(Importer.updateImportedUser(user))
             .onErrorResume(Exception.class,ex ->{
               log.error("Exception {}", ex.getMessage());
               return Mono.empty();
-            })).subscribe();
+            }))
+         .doOnComplete(()->log.info("Time taken : " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) + " milliseconds."))
+         .subscribe();
+
   }
 
   /**
