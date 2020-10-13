@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
-import ro.home.collector.Utility;
 import ro.home.collector.model.AccountsDto;
 import ro.home.collector.model.ComposedPrimaryKey;
 import ro.home.collector.model.TransactionsDto;
@@ -55,7 +53,7 @@ public class Importer implements ApplicationRunner {
    * @param user enrich the user with token
    * @return return a cloned user enriched wit the token
    */
-  public static Mono<UsersDto> getJWTForUser(final UsersDto user) {
+  public Mono<UsersDto> getJWTForUser(final UsersDto user) {
     log.info("getJWTForUser user:{}",user.getUsername());
     return webClient
         .post()
@@ -74,7 +72,7 @@ public class Importer implements ApplicationRunner {
    * @param user for which we save the accounts
    * @return a flux of saved accounts
    */
-  public static Flux<AccountsDto> getAndSaveAccounts(final UsersDto user) {
+  public Flux<AccountsDto> getAndSaveAccounts(final UsersDto user) {
      return webClient.get()
         .uri(importerSettings.getAccountsUri())
         .header("X-AUTH", user.getJwt())
@@ -93,7 +91,7 @@ public class Importer implements ApplicationRunner {
    * @param user for which we save the transactions
    * @return a flux of saved transactions
    */
-  public static Flux<TransactionsDto> getAndSaveTransactions(final UsersDto user) {
+  public Flux<TransactionsDto> getAndSaveTransactions(final UsersDto user) {
     return webClient.get()
         .uri(importerSettings.getTransactionsUri())
         .header("X-AUTH", user.getJwt())
@@ -114,7 +112,7 @@ public class Importer implements ApplicationRunner {
    * @param user
    * @return saved user
    */
-  public static Mono<UsersDto> updateImportedUser(UsersDto user) {
+  public Mono<UsersDto> updateImportedUser(UsersDto user) {
     log.info("user {} {} {}", user.getUsername(), UsersDto.class, 1);
     user.setImportDate(LocalDate.now());
     return usersRepository.save(user);
@@ -145,17 +143,15 @@ public class Importer implements ApplicationRunner {
    * imported date
    * @param fluxOfUsers a list of users
    */
-  public static void importFluxOfUsers(Flux<UsersDto> fluxOfUsers){
+  public void importFluxOfUsers(Flux<UsersDto> fluxOfUsers){
     final long start = System.nanoTime();
       fluxOfUsers
-        .parallel(10)
-        .runOn(Schedulers.newParallel("my-parallel"))
-        .filter(Utility::wasNotUpdatedToday)
-        .flatMap(Importer::getJWTForUser)
+        .filter(UserSelector::wasNotUpdatedToday)
+        .flatMap(userWithJwt->getJWTForUser(userWithJwt))
         .concatMap(user->Flux.empty()
-            .thenMany(Importer.getAndSaveAccounts(user))
-            .thenMany(Importer.getAndSaveTransactions(user))
-            .thenMany(Importer.updateImportedUser(user))
+            .thenMany(getAndSaveAccounts(user))
+            .thenMany(getAndSaveTransactions(user))
+            .thenMany(updateImportedUser(user))
             .onErrorResume(Exception.class,ex ->{
               log.error("Exception {}", ex.getMessage());
               return Mono.empty();
@@ -170,13 +166,14 @@ public class Importer implements ApplicationRunner {
    * @param usersDto the new user
    * @return saved users
    */
-  public static Mono<UsersDto> importSingleUser(UsersDto usersDto){
+  public Mono<UsersDto> importSingleUser(UsersDto usersDto){
     return Mono.just(usersDto)
-        .filter(Utility::wasNotUpdatedToday)
-        .flatMap(Importer::getJWTForUser)
-        .delayUntil(user->Flux.empty().thenMany(Importer.getAndSaveAccounts(user))
-            .thenMany(Importer.getAndSaveTransactions(user))
-            .thenMany(Importer.updateImportedUser(user)))
+        .filter(UserSelector::wasNotUpdatedToday)
+        .flatMap(user->getJWTForUser(user))
+        .delayUntil(user->Flux.empty()
+            .thenMany(getAndSaveAccounts(user))
+            .thenMany(getAndSaveTransactions(user))
+            .thenMany(updateImportedUser(user)))
         .map(mono->mono);
   }
 

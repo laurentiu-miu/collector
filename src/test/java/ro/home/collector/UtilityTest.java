@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import ro.home.collector.importer.UserSelector;
 import ro.home.collector.model.UsersDto;
 
 /**
@@ -13,14 +14,16 @@ import ro.home.collector.model.UsersDto;
 public class UtilityTest {
   @Test
   public void wasNotUpdatedTodayTrue(){
-    assertTrue(Utility.wasNotUpdatedToday(UsersDto.builder().importDate(LocalDate.parse("2020-01-01")).build()));
+    assertTrue(
+        UserSelector
+            .wasNotUpdatedToday(UsersDto.builder().importDate(LocalDate.parse("2020-01-01")).build()));
   }
   @Test
   public void wasNotUpdatedTodayFalse(){
-    assertFalse(Utility.wasNotUpdatedToday(UsersDto.builder().importDate(LocalDate.now()).build()));
+    assertFalse(UserSelector.wasNotUpdatedToday(UsersDto.builder().importDate(LocalDate.now()).build()));
   }
   @Test
   public void wasNotUpdatedTodayNull(){
-    assertTrue(Utility.wasNotUpdatedToday(UsersDto.builder().build()));
+    assertTrue(UserSelector.wasNotUpdatedToday(UsersDto.builder().build()));
   }
 }

@@ -1,6 +1,5 @@
 package ro.home.collector.model;
 
-import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
